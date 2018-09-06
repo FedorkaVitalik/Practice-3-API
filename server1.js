@@ -7,12 +7,9 @@ const urlencodedParser = bodyParser.urlencoded({
 	extended: false
 });
 
-
-const dataFileName = 'data.json'
-const initialDataFileName = 'initialData.json'
-const encoding = 'utf8'
-
-
+const dataFileName = 'data.json';
+const initialDataFileName = 'initialData.json';
+const encoding = 'utf8';
 
 //Функція, яка зчитує дані з файлу, або якщо він пустий то записує нові дані, зчитуючи їх з іншого файлу
 function readFileData() {
@@ -36,7 +33,7 @@ function prepareDefultData() {
 }
 
 //Обробник запиту глобальних даних
-app.get('/getGlobal', function (req, res) {
+app.get('/getGlobal', function(req, res) {
 	var data = readFileData();
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
@@ -44,8 +41,8 @@ app.get('/getGlobal', function (req, res) {
 });
 
 //Обробник запиту виведення студентів конкретного курсу
-app.get('/getNote', function (req, res) {
-	console.log(req.query)
+app.get('/getNote', function(req, res) {
+	console.log(req.query);
 	var data = readFileData();
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
@@ -60,8 +57,8 @@ app.get('/getNote', function (req, res) {
 });
 
 //Обробник запиту виставлення оцінки конкретному студенту з конкретного предмету
-app.post('/setMark', urlencodedParser, function (req, res) {
-	console.log(req.body)
+app.post('/setMark', urlencodedParser, function(req, res) {
+	console.log(req.body);
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	let data = readFileData();
@@ -93,8 +90,8 @@ app.post('/setMark', urlencodedParser, function (req, res) {
 });
 
 //Обробник запиту добавлення студента
-app.post('/addStud', urlencodedParser, function (req, res) {
-	console.log(req.body)
+app.post('/addStud', urlencodedParser, function(req, res) {
+	console.log(req.body);
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	let data = readFileData();
@@ -105,18 +102,16 @@ app.post('/addStud', urlencodedParser, function (req, res) {
 });
 
 //Обробник запиту видалення студента
-app.post('/deleteStud', urlencodedParser, function (req, res) {
-	console.log(req.body)
+app.post('/deleteStud', urlencodedParser, function(req, res) {
+	console.log(req.body);
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	let data = readFileData();
 	let courseStudents = data.students[req.body.facult][req.body.spec][req.body.course];
 	for (let stud in courseStudents) {
-
 		if (stud === req.body.stud) {
 			delete courseStudents[stud];
 		}
-
 	}
 
 	writeFileData(data);
@@ -124,8 +119,8 @@ app.post('/deleteStud', urlencodedParser, function (req, res) {
 });
 
 //Обробник запиту перевірки всіх студентів на наявність незадовільної оцінки
-app.post('/retake', urlencodedParser, function (req, res) {
-	console.log(req.body)
+app.post('/retake', urlencodedParser, function(req, res) {
+	console.log(req.body);
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	let data = readFileData();
@@ -146,20 +141,25 @@ app.post('/retake', urlencodedParser, function (req, res) {
 								student,
 								subj,
 								f,
-								s,
-								facultCounter
+								s
 							});
 							facultCounter++;
-
-
 						}
 					}
 				}
 			}
 		}
+		if (facultCounter) {
+			facultCounterInfo[f] = facultCounter;
+		}
 	}
 
-	res.send(JSON.stringify(retakeInfo));
+	res.send(
+		JSON.stringify({
+			retakeInfo: retakeInfo,
+			facultCounterInfo: facultCounterInfo
+		})
+	);
 });
 
 app.listen(3000, 'localhost');
