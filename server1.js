@@ -125,10 +125,11 @@ app.post('/retake', urlencodedParser, function(req, res) {
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	let data = readFileData();
 	let retakeInfo = [];
+	let facultCounterInfo = {};
 
 	let students = data.students;
 	for (let f in students) {
-		let facultCounter = 1;
+		let facultCounter = 0;
 		for (let s in students[f]) {
 			for (let c in students[f][s]) {
 				studObj = students[f][s][c];
